@@ -26,9 +26,19 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>BumpInt.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/inc/BumpInt.c</locationURI>
+		</link>
+		<link>
 			<name>Clock.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/inc/Clock.c</locationURI>
+		</link>
+		<link>
+			<name>CortexM.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/inc/CortexM.c</locationURI>
 		</link>
 		<link>
 			<name>SysTick.c</name>
