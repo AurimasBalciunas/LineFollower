@@ -41,9 +41,9 @@
 			<locationURI>PARENT-1-PROJECT_LOC/inc/CortexM.c</locationURI>
 		</link>
 		<link>
-			<name>SysTick.c</name>
+			<name>SysTickInts.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/inc/SysTick.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/inc/SysTickInts.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

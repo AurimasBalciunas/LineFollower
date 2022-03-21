@@ -2,7 +2,7 @@
 // Mar 18 2022
 // SensorInt.h
 // Reads the reflectance sensors using interrupts
-
+/*
 #include <stdint.h>
 
 // [1-9] in ms between
@@ -35,3 +35,5 @@ uint8_t ReadSensorData(void) {
 
     return SensorInput;
 }
+
+*/

@@ -34,13 +34,14 @@ typedef const struct State State_t;
 
 // Standard time between states
 #define dt 100
+#define dtLost 1000
 
 // Speed PWM definitions (0, 14998)
-#define MAX 14998  // 100%
-#define HIGH 12000 // 80%
-#define MED 7500   // 50%
-#define NMED -7500 // -50% (Reverse Medium)
-#define LOW 3000   // 20%
+#define MAX 14998/3  // 100%
+#define HIGH 12000/3 // 80%
+#define MED 7500/3   // 50%
+#define NMED -7500/3 // -50% (Reverse Medium)
+#define LOW 3000/3   // 20%
 
 State_t fsm[12]={
   {MAX, MAX,  dt, {LC1, L3, L2, L1, OL, R1, R2, R3}},  // On Line
@@ -50,10 +51,10 @@ State_t fsm[12]={
   {HIGH,MAX,  dt, {RLC, L3, L2, L1, OL, R1, R2, R3}},  // Right 1
   {MED, MAX,  dt, {RLC, L3, L2, L1, OL, R1, R2, R3}},  // Right 2
   {LOW, MAX,  dt, {RLC, L3, L2, L1, OL, R1, R2, R3}},  // Right 3
-  {MED, NMED, dt, {LC1, L3, L2, L1, OL, R1, R2, R3}},  // Left Lost Check
-  {NMED, MED, dt, {LC1, L3, L2, L1, OL, R1, R2, R3}},  // Right Lost Check
-  {MED, NMED, dt, {LC2, L3, L2, L1, OL, R1, R2, R3}},  // Lost Check 1
-  {NMED, MED, dt, {FL,  L3, L2, L1, OL, R1, R2, R3}},  // Lost Check 2
+  {MED, NMED, dtLost, {LC1, L3, L2, L1, OL, R1, R2, R3}},  // Left Lost Check
+  {NMED, MED, dtLost, {LC1, L3, L2, L1, OL, R1, R2, R3}},  // Right Lost Check
+  {MED, NMED, dtLost, {LC2, L3, L2, L1, OL, R1, R2, R3}},  // Lost Check 1
+  {NMED, MED, dtLost, {FL,  L3, L2, L1, OL, R1, R2, R3}},  // Lost Check 2
   {0, 0,    1000, {FL,  FL, FL, FL, FL, FL, FL, FL}}   // Fully Lost, Stop
 };
 
@@ -92,9 +93,17 @@ void start_fsm()
     state = OL;
 
     while(1){
-        call_motor(state->leftDuty, state->rightDuty);  // Send state output to motor
-        Clock_Delay1ms(state->delay);                   // wait
-        state = state->next[ReadSensorData()];          // next depends on input and state
+        if(!getColFlag())
+        {
+            call_motor(state->leftDuty, state->rightDuty);  // Send state output to motor
+            Clock_Delay1ms(state->delay);                   // wait
+            uint8_t test = ReadSensorData();
+            state = state->next[ReadSensorData()];          // next depends on input and state
+        }
+        else
+        {
+            state = FL;
+        }
     }
 }
 
