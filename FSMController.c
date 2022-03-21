@@ -30,11 +30,15 @@ typedef const struct State State_t;
 #define RLC &fsm[8]
 #define LC1 &fsm[9]
 #define LC2 &fsm[10]
+#define LF &fsm[12]
 #define FL &fsm[11]
 
 // Standard time between states
-#define dt 100
-#define dtLost 1000
+#define dtGoodGood 40
+#define dtGood 30
+#define dt 15
+#define dtSlightLost 800/2
+#define dtLost 800
 
 // Speed PWM definitions (0, 14998)
 #define MAX 14998/3  // 100%
@@ -43,19 +47,20 @@ typedef const struct State State_t;
 #define NMED -7500/3 // -50% (Reverse Medium)
 #define LOW 3000/3   // 20%
 
-State_t fsm[12]={
-  {MAX, MAX,  dt, {LC1, L3, L2, L1, OL, R1, R2, R3}},  // On Line
-  {MAX, HIGH, dt, {LLC, L3, L2, L1, OL, R1, R2, R3}},  // Left 1
+State_t fsm[13]={
+  {MAX, MAX,  dtGoodGood, {LC1, L3, L2, L1, OL, R1, R2, R3}},  // On Line
+  {MAX, HIGH, dtGood, {LLC, L3, L2, L1, OL, R1, R2, R3}},  // Left 1
   {MAX, MED,  dt, {LLC, L3, L2, L1, OL, R1, R2, R3}},  // Left 2
   {MAX, LOW,  dt, {LLC, L3, L2, L1, OL, R1, R2, R3}},  // Left 3
-  {HIGH,MAX,  dt, {RLC, L3, L2, L1, OL, R1, R2, R3}},  // Right 1
+  {HIGH,MAX,  dtGood, {RLC, L3, L2, L1, OL, R1, R2, R3}},  // Right 1
   {MED, MAX,  dt, {RLC, L3, L2, L1, OL, R1, R2, R3}},  // Right 2
   {LOW, MAX,  dt, {RLC, L3, L2, L1, OL, R1, R2, R3}},  // Right 3
-  {MED, NMED, dtLost, {LC1, L3, L2, L1, OL, R1, R2, R3}},  // Left Lost Check
-  {NMED, MED, dtLost, {LC1, L3, L2, L1, OL, R1, R2, R3}},  // Right Lost Check
+  {MED, NMED, dtSlightLost, {LC1, L3, L2, L1, OL, R1, R2, R3}},  // Left Lost Check
+  {NMED, MED, dtSlightLost, {LC1, L3, L2, L1, OL, R1, R2, R3}},  // Right Lost Check
   {MED, NMED, dtLost, {LC2, L3, L2, L1, OL, R1, R2, R3}},  // Lost Check 1
-  {NMED, MED, dtLost, {FL,  L3, L2, L1, OL, R1, R2, R3}},  // Lost Check 2
-  {0, 0,    1000, {FL,  FL, FL, FL, FL, FL, FL, FL}}   // Fully Lost, Stop
+  {NMED, MED, dtLost, {LF,  L3, L2, L1, OL, R1, R2, R3}},  // Lost Check 2
+  {0, 0,    1000, {FL,  FL, FL, FL, FL, FL, FL, FL}},   // Fully Lost, Stop
+  {MED, MED, 750, {FL, L3, L2, L1, OL, R1, R2, R3}} // Lost forward check
 };
 
 // Motor Translation Function
