@@ -34,7 +34,8 @@ typedef const struct State State_t;
 
 // Standard time between states
 #define dt 100
-#define dtLost 1000
+#define dtRLost 2000
+#define dtLost 400
 
 // Speed PWM definitions (0, 14998)
 #define MAX 14998/3  // 100%
@@ -53,8 +54,8 @@ State_t fsm[12]={
   {LOW, MAX,  dt, {RLC, L3, L2, L1, OL, R1, R2, R3}},  // Right 3
   {MED, NMED, dtLost, {LC1, L3, L2, L1, OL, R1, R2, R3}},  // Left Lost Check
   {NMED, MED, dtLost, {LC1, L3, L2, L1, OL, R1, R2, R3}},  // Right Lost Check
-  {MED, NMED, dtLost, {LC2, L3, L2, L1, OL, R1, R2, R3}},  // Lost Check 1
-  {NMED, MED, dtLost, {FL,  L3, L2, L1, OL, R1, R2, R3}},  // Lost Check 2
+  {MED, NMED, dtRLost, {LC2, L3, L2, L1, OL, R1, R2, R3}},  // Lost Check 1
+  {NMED, MED, dtRLost, {FL,  L3, L2, L1, OL, R1, R2, R3}},  // Lost Check 2
   {0, 0,    1000, {FL,  FL, FL, FL, FL, FL, FL, FL}}   // Fully Lost, Stop
 };
 
