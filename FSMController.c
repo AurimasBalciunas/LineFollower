@@ -37,10 +37,10 @@ typedef const struct State State_t;
 
 // Standard time between states
 #define dtGoodGood 40
-#define dtGood 30
+#define dtGood 25 //was 30
 #define dt 15
-#define dtSlightLost 800/2
-#define dtLost 800
+#define dtSlightLost 400
+#define dtLost 700
 
 // Speed PWM definitions (0, 14998)
 #define MAX 14998/3  // 100%
