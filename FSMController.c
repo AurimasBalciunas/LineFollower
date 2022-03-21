@@ -42,10 +42,11 @@ typedef const struct State State_t;
 
 // Speed PWM definitions (0, 14998)
 #define MAX 14998/3  // 100%
-#define HIGH 12000/3 // 80%
-#define MED 7500/3   // 50%
-#define NMED -7500/3 // -50% (Reverse Medium)
-#define LOW 3000/3   // 20%
+#define HIGH 13000/3 // 80%
+#define MED 10000/3   // 50%
+#define NMED -10000/3 // -50% (Reverse Medium)
+#define LOW 5000/3   // 20%
+
 
 State_t fsm[13]={
   {MAX, MAX,  dtGoodGood, {LC1, L3, L2, L1, OL, R1, R2, R3}},  // On Line
