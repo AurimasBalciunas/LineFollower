@@ -32,6 +32,8 @@ typedef const struct State State_t;
 #define LC2 &fsm[10]
 #define LF &fsm[12]
 #define FL &fsm[11]
+#define RLLC &fsm[13]
+#define RRLC &fsm[14]
 
 // Standard time between states
 #define dtGoodGood 40
@@ -48,7 +50,7 @@ typedef const struct State State_t;
 #define LOW 5000/3   // 20%
 
 
-State_t fsm[13]={
+State_t fsm[15]={
   {MAX, MAX,  dtGoodGood, {LC1, L3, L2, L1, OL, R1, R2, R3}},  // On Line
   {MAX, HIGH, dtGood, {LLC, L3, L2, L1, OL, R1, R2, R3}},  // Left 1
   {MAX, MED,  dt, {LLC, L3, L2, L1, OL, R1, R2, R3}},  // Left 2
@@ -56,12 +58,14 @@ State_t fsm[13]={
   {HIGH,MAX,  dtGood, {RLC, L3, L2, L1, OL, R1, R2, R3}},  // Right 1
   {MED, MAX,  dt, {RLC, L3, L2, L1, OL, R1, R2, R3}},  // Right 2
   {LOW, MAX,  dt, {RLC, L3, L2, L1, OL, R1, R2, R3}},  // Right 3
-  {MED, NMED, dtSlightLost, {LC1, L3, L2, L1, OL, R1, R2, R3}},  // Left Lost Check
-  {NMED, MED, dtSlightLost, {LC1, L3, L2, L1, OL, R1, R2, R3}},  // Right Lost Check
+  {MED, NMED, dtSlightLost, {RLLC, L3, L2, L1, OL, R1, R2, R3}},  // Left Lost Check
+  {NMED, MED, dtSlightLost, {RRLC, L3, L2, L1, OL, R1, R2, R3}},  // Right Lost Check
   {MED, NMED, dtLost, {LC2, L3, L2, L1, OL, R1, R2, R3}},  // Lost Check 1
   {NMED, MED, dtLost, {LF,  L3, L2, L1, OL, R1, R2, R3}},  // Lost Check 2
   {0, 0,    1000, {FL,  FL, FL, FL, FL, FL, FL, FL}},   // Fully Lost, Stop
-  {MED, MED, 750, {FL, L3, L2, L1, OL, R1, R2, R3}} // Lost forward check
+  {MED, MED, 650, {FL, L3, L2, L1, OL, R1, R2, R3}}, // Lost forward check //was 700
+  {NMED, MED, dtSlightLost, {LC1, L3, L2, L1, OL, R1, R2, R3}},  // Left Lost Check REV
+  {MED, NMED, dtSlightLost, {LC1, L3, L2, L1, OL, R1, R2, R3}}  // Right Lost Check REV
 };
 
 // Motor Translation Function
