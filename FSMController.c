@@ -70,7 +70,7 @@ State_t fsm[15]={
 
 // Motor Translation Function
 // Motor cannot accept negative inputs, only PWM (0 to 14,998)
-void call_motor(int16_t leftDuty, int16_t rightDuty) {
+void call_motor(int16_t leftDuty, int16_t rightDuty){
 
     uint8_t leftForward = leftDuty >= 0;
     uint8_t rightForward = rightDuty >= 0;
@@ -97,8 +97,7 @@ void call_motor(int16_t leftDuty, int16_t rightDuty) {
 State_t *state;
 
 // Starts fsm and will loop continuously
-void start_fsm()
-{
+void start_fsm(){
     // Assume initially on line
     state = OL;
 
