@@ -4,6 +4,7 @@
 struct State {
   int16_t leftDuty;              // Duty Cycle %
   int16_t rightDuty;             // [-100 to 100]
+  uint32_t dataLog;              // Ben
   uint32_t delay;                // Delay in ms
   const struct State *next[8];   // 3-bit input -> 8 next states
 };
@@ -50,7 +51,7 @@ typedef const struct State State_t;
 #define LOW 5000/3   // 20%
 
 
-State_t fsm[15]={
+/*State_t fsm[15]={
   {MAX, MAX,  dtGoodGood, {LC1, L3, L2, L1, OL, R1, R2, R3}},  // On Line
   {MAX, HIGH, dtGood, {LLC, L3, L2, L1, OL, R1, R2, R3}},  // Left 1
   {MAX, MED,  dt, {LLC, L3, L2, L1, OL, R1, R2, R3}},  // Left 2
@@ -66,6 +67,24 @@ State_t fsm[15]={
   {MED, MED, 650, {FL, L3, L2, L1, OL, R1, R2, R3}}, // Lost forward check //was 700
   {NMED, MED, dtSlightLost, {LC1, L3, L2, L1, OL, R1, R2, R3}},  // Left Lost Check REV
   {MED, NMED, dtSlightLost, {LC1, L3, L2, L1, OL, R1, R2, R3}}  // Right Lost Check REV
+};*/
+
+State_t fsm[15]={
+  {MAX, MAX,  0,  dtGoodGood, {LC1, L3, L2, L1, OL, R1, R2, R3}},  // On Line
+  {MAX, HIGH, 1,  dtGood, {LLC, L3, L2, L1, OL, R1, R2, R3}},  // Left 1
+  {MAX, MED,  2,  dt, {LLC, L3, L2, L1, OL, R1, R2, R3}},  // Left 2
+  {MAX, LOW,  3,  dt, {LLC, L3, L2, L1, OL, R1, R2, R3}},  // Left 3
+  {HIGH,MAX,  4,  dtGood, {RLC, L3, L2, L1, OL, R1, R2, R3}},  // Right 1
+  {MED, MAX,  5,  dt, {RLC, L3, L2, L1, OL, R1, R2, R3}},  // Right 2
+  {LOW, MAX,  6,  dt, {RLC, L3, L2, L1, OL, R1, R2, R3}},  // Right 3
+  {MED, NMED, 7,  dtSlightLost, {RLLC, L3, L2, L1, OL, R1, R2, R3}},  // Left Lost Check
+  {NMED, MED, 8,  dtSlightLost, {RRLC, L3, L2, L1, OL, R1, R2, R3}},  // Right Lost Check
+  {MED, NMED, 9,  dtLost, {LC2, L3, L2, L1, OL, R1, R2, R3}},  // Lost Check 1
+  {NMED, MED, 10, dtLost, {LF,  L3, L2, L1, OL, R1, R2, R3}},  // Lost Check 2
+  {0, 0,      11, 1000, {FL,  FL, FL, FL, FL, FL, FL, FL}},   // Fully Lost, Stop
+  {MED, MED,  12, 650, {FL, L3, L2, L1, OL, R1, R2, R3}}, // Lost forward check //was 700
+  {NMED, MED, 13, dtSlightLost, {LC1, L3, L2, L1, OL, R1, R2, R3}},  // Left Lost Check REV
+  {MED, NMED, 14, dtSlightLost, {LC1, L3, L2, L1, OL, R1, R2, R3}}  // Right Lost Check REV
 };
 
 // Motor Translation Function
@@ -96,6 +115,18 @@ void call_motor(int16_t leftDuty, int16_t rightDuty){
 
 State_t *state;
 
+uint8_t DataLogging_B = 1;
+
+// Write to Flash ROM
+void Debug_FlashRecord(uint32_t data){
+  uint32_t addr = 0x00020000;
+  while(*(uint32_t*)addr != 0xFFFFFFFF){ // find first free block
+    addr = addr + 4;
+    if (addr > 0x0003FFFF) { return; }   // flash ROM is full --> stop recording
+  }
+  Flash_Write(addr, data);
+}
+
 // Starts fsm and will loop continuously
 void start_fsm(){
     // Assume initially on line
@@ -113,6 +144,8 @@ void start_fsm(){
         {
             state = FL;
         }
+      
+        if (DataLogging_B == 1) { Debug_FlashRecord(state->dataLog); }
     }
 }
 
