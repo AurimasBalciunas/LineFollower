@@ -4,6 +4,8 @@ Line Follower is a project for ECE1188 Cyber-Physical Systems. Its goal is to ut
 
 Directory Structure: 
 The main folder of the directory contains most of the code from the project. 
+
 However, some parts of the project were linkd from the /inc folder and these files are not included in the main folder. The files not present in the main folder can be found in the "All Files" zipped folder. This includes BumpInt.h/.c and SensorInt.h/.c.
+
 Report contains all videos mentioned in the report.
 
