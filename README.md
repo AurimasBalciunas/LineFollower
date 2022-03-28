@@ -6,7 +6,7 @@ Line Follower is a project for ECE1188 Cyber-Physical Systems. Its goal is to ut
 
 
 
-**Directory Structure: **
+**Directory Structure:**
 
 The main folder of the directory contains most of the code from the project. 
 
